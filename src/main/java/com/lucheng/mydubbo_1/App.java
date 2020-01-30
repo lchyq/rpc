@@ -1,4 +1,4 @@
-package com.lucheng;
+package com.lucheng.mydubbo_1;
 
 import com.lucheng.mydubbo_1.impl.HelloServiceImpl;
 import com.lucheng.mydubbo_1.inter.HelloService;

@@ -1,5 +1,10 @@
 package com.lucheng.mydubbo_1.proxy;
 
+import com.lucheng.mydubbo_1.bean.RequestMessage;
+import com.lucheng.mydubbo_1.bean.ResponseMessage;
+import com.lucheng.mydubbo_1.client.Client;
+import com.lucheng.mydubbo_1.util.SerializeUtils;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -9,11 +14,42 @@ import java.lang.reflect.Proxy;
  */
 public class ProxyFactory {
     public static InvocationHandler handler = new InvocationHandler() {
+        /**
+         * 在具体的代理方法内部实现rpc客户端的远程调用
+         * @param proxy 代理类
+         * @param method
+         * @param args
+         * @return
+         * @throws Throwable
+         */
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            //在具体的代理方法内部实现rpc客户端的远程调用
-            System.out.print("qwe");
-            return null;
+            //获取接口名
+             Class[] interfaces = proxy.getClass().getInterfaces();
+             //单接口
+             String interName = interfaces[0].getName();
+             //获取方法名
+            String  methodName = method.getName();
+            //参数类型
+            Class[] type = null;
+            if(args != null){
+                type = new Class[args.length];
+                for(int i = 0;i < args.length;i++){
+                    type[i] = args[i].getClass();
+                }
+            }
+            //构造请求参数
+            RequestMessage message = new RequestMessage.RequestMessageBuilder()
+                    .buildInterName(interName)
+                    .buildMethodName(methodName)
+                    .buildArgs(args)
+                    .buildTypes(type)
+                    .build();
+            //参数序列化
+            byte[] request = SerializeUtils.serialize(message);
+            //客户端发送请求
+            //此处为阻塞获取调用结果
+            return Client.send(request);
         }
     };
 
