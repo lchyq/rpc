@@ -5,5 +5,14 @@ import java.io.Serializable;
 /**
  * rpc 响应类
  */
-public class ResponseMessage implements Serializable {
+public class ResponseMessage<T> implements Serializable {
+    private T result;
+
+    public T getResult() {
+        return result;
+    }
+
+    public void setResult(T result) {
+        this.result = result;
+    }
 }

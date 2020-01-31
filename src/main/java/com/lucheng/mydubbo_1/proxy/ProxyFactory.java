@@ -13,7 +13,7 @@ import java.lang.reflect.Proxy;
  * 代理工厂
  */
 public class ProxyFactory {
-    public static InvocationHandler handler = new InvocationHandler() {
+    private static InvocationHandler handler = new InvocationHandler() {
         /**
          * 在具体的代理方法内部实现rpc客户端的远程调用
          * @param proxy 代理类
@@ -28,12 +28,13 @@ public class ProxyFactory {
              Class[] interfaces = proxy.getClass().getInterfaces();
              //单接口
              String interName = interfaces[0].getName();
+            System.out.println("interName: "+interName);
              //获取方法名
             String  methodName = method.getName();
             //参数类型
             Class[] type = null;
             if(args != null){
-                type = new Class[args.length];
+                 type = new Class[args.length];
                 for(int i = 0;i < args.length;i++){
                     type[i] = args[i].getClass();
                 }
@@ -49,7 +50,7 @@ public class ProxyFactory {
             byte[] request = SerializeUtils.serialize(message);
             //客户端发送请求
             //此处为阻塞获取调用结果
-            return Client.send(request);
+            return Client.send(request).getResult();
         }
     };
 

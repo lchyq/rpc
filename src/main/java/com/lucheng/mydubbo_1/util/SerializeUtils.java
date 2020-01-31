@@ -8,7 +8,7 @@ import java.io.*;
  * 序列化类
  */
 public class SerializeUtils {
-    public static byte[] serialize(RequestMessage message){
+    public static byte[] serialize(Object message){
         ByteArrayOutputStream outputStream = null;
         ObjectOutputStream objectOutputStream = null;
         byte[] result = null;
@@ -45,15 +45,14 @@ public class SerializeUtils {
         }
         return result;
     }
-    public static ResponseMessage reSerialize(byte[] message){
+    public static Object reSerialize(byte[] message){
         ByteArrayInputStream os = null;
         ObjectInputStream objectInputStream = null;
-        ResponseMessage message1 = null;
+        Object message1 = null;
         try {
-            byte[] result = new byte[1024];
-            os = new ByteArrayInputStream(result);
+            os = new ByteArrayInputStream(message);
             objectInputStream = new ObjectInputStream(os);
-            message1 = (ResponseMessage)objectInputStream.readObject();
+            message1 = objectInputStream.readObject();
             os.close();
             objectInputStream.close();
             return message1;

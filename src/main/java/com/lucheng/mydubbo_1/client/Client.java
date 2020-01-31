@@ -1,6 +1,10 @@
 package com.lucheng.mydubbo_1.client;
 import com.lucheng.mydubbo_1.bean.ResponseMessage;
+import com.lucheng.mydubbo_1.inter.HelloService;
+import com.lucheng.mydubbo_1.proxy.ProxyFactory;
 import com.lucheng.mydubbo_1.util.SerializeUtils;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -17,7 +21,7 @@ public class Client {
     public static ResponseMessage send(byte[] request){
         try {
             Socket socket = new Socket(host,port);
-            System.out.println("与客户端建立tcp链接，开始发送请求");
+            System.out.println("与服务器建立tcp链接，开始发送请求");
             //发送调用请求
             OutputStream outputStream = socket.getOutputStream();
             outputStream.write(request);
@@ -25,12 +29,21 @@ public class Client {
             InputStream inputStream = socket.getInputStream();
             byte[] result = new byte[1024];
             inputStream.read(result);
+            socket.close();
             //将结果反序列化拿到我们需要的结果
-            return SerializeUtils.reSerialize(result);
+            return (ResponseMessage) SerializeUtils.reSerialize(result);
         } catch (IOException e) {
             System.out.println("客户端链接失败");
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static void main(String[] args) {
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("spring/spring-config.xml");
+        HelloService helloService = ProxyFactory.getInstance(HelloService.class);
+        //结果是 InvocationHandler.invoke的返回值
+        String result = helloService.getName("hyq");
+        System.out.println(result);
     }
 }
