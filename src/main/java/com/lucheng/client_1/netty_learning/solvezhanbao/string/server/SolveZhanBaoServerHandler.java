@@ -1,4 +1,4 @@
-package com.lucheng.client_1.netty_learning.solvezhanbao.server;
+package com.lucheng.client_1.netty_learning.solvezhanbao.string.server;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

@@ -1,10 +1,9 @@
-package com.lucheng.client_1.netty_learning.solvezhanbao.client;
+package com.lucheng.client_1.netty_learning.solvezhanbao.string.client;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.socket.ChannelInputShutdownEvent;
 
 public class SolveZhanBaoHandker extends ChannelInboundHandlerAdapter {
     private int count;

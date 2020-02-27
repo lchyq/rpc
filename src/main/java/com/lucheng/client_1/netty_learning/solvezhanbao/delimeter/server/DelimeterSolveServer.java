@@ -1,7 +1,9 @@
-package com.lucheng.client_1.netty_learning.solvezhanbao.server;
+package com.lucheng.client_1.netty_learning.solvezhanbao.delimeter.server;
 
-import com.lucheng.client_1.netty_learning.zhanbao.server.ZhanBaoServerHandler;
+import com.lucheng.client_1.netty_learning.solvezhanbao.string.server.SolveZhanBaoServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -9,13 +11,10 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.LineBasedFrameDecoder;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 
-/**
- * 使用netty自带的handler来处理沾包问题
- */
-public class SolveZhanBaoServer {
+public class DelimeterSolveServer {
     public static void main(String[] args) {
         EventLoopGroup boss = new NioEventLoopGroup();
         EventLoopGroup work = new NioEventLoopGroup();
@@ -27,9 +26,9 @@ public class SolveZhanBaoServer {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
                         ch.pipeline()
-                        .addLast(new LineBasedFrameDecoder(1024)) //根据\n \n\r进行分割，超过最大字符长度抛出错误
-                        .addLast(new StringDecoder()) // 直接将 bytebuf 转化为 String
-                        .addLast(new SolveZhanBaoServerHandler());
+                                .addLast(new DelimiterBasedFrameDecoder(1024,Unpooled.copiedBuffer("$_".getBytes()))) //根据分割符来拆包
+                                .addLast(new StringDecoder()) // 直接将 bytebuf 转化为 String
+                                .addLast(new DelimiterSolveServerHandler());
                     }
                 });
 
