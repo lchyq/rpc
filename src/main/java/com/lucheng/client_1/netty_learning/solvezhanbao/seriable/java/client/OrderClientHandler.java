@@ -13,10 +13,12 @@ public class OrderClientHandler extends ChannelInboundHandlerAdapter {
             OrderRequest orderRequest = getOrder(i);
             ctx.writeAndFlush(orderRequest);
         }
+        System.out.print(1);
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        System.out.print(2);
         OrderResponse orderResponse = (OrderResponse) msg;
         System.out.print(String.format("收到服务器的订单状态信息：{%s}，count:{%s}", orderResponse, ++count ));
     }
