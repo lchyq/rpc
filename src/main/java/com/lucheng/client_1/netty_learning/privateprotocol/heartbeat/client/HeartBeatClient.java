@@ -1,6 +1,7 @@
-package com.lucheng.client_1.netty_learning.solvezhanbao.seriable.marshalling.client;
+package com.lucheng.client_1.netty_learning.privateprotocol.heartbeat.client;
 
 import com.lucheng.client_1.netty_learning.solvezhanbao.seriable.java.client.OrderClientHandler;
+import com.lucheng.client_1.netty_learning.solvezhanbao.seriable.marshalling.client.MarshallingCodeFactory;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -10,7 +11,12 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
-public class MarshallingClient {
+/**
+ * 心跳检测client
+ * @author lucheng28
+ * @date 2020-03-03
+ */
+public class HeartBeatClient {
     public static void main(String[] args) {
         EventLoopGroup work = new NioEventLoopGroup();
         Bootstrap bootstrap = new Bootstrap();
@@ -22,7 +28,7 @@ public class MarshallingClient {
                     protected void initChannel(SocketChannel ch) throws Exception {
                         ch.pipeline().addLast(MarshallingCodeFactory.buildMarshallingDecoder())
                                 .addLast(MarshallingCodeFactory.buildMarshallingEncoder())
-                                .addLast(new OrderClientHandler());
+                                .addLast(new HeartBeatClientHandler());
                     }
                 });
         try {
