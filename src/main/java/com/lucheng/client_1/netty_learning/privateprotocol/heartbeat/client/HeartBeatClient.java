@@ -10,6 +10,10 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.timeout.ReadTimeoutHandler;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
  * 心跳检测client
@@ -18,6 +22,11 @@ import io.netty.channel.socket.nio.NioSocketChannel;
  */
 public class HeartBeatClient {
     public static void main(String[] args) {
+        new HeartBeatClient().connect();
+    }
+
+    public void connect(){
+        ExecutorService executorService = new ScheduledThreadPoolExecutor(1);
         EventLoopGroup work = new NioEventLoopGroup();
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(work)
@@ -28,6 +37,7 @@ public class HeartBeatClient {
                     protected void initChannel(SocketChannel ch) throws Exception {
                         ch.pipeline().addLast(MarshallingCodeFactory.buildMarshallingDecoder())
                                 .addLast(MarshallingCodeFactory.buildMarshallingEncoder())
+                                .addLast(new ReadTimeoutHandler(50)) //50s没有读取到消息，需要断线重连
                                 .addLast(new HeartBeatClientHandler());
                     }
                 });
@@ -38,6 +48,17 @@ public class HeartBeatClient {
             e.printStackTrace();
         }finally {
             work.shutdownGracefully();
+            executorService.submit(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(5000);
+                        connect(); //5s后重新链接，直到链接成功为止
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
     }
 }
