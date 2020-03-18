@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 仅仅存储接口之间的映射
  */
 @Component
-public class RegisterMap implements ApplicationContextAware {
+public class RegisterMap2 implements ApplicationContextAware {
     private static final Map<String,Object> registerService = new ConcurrentHashMap<>();
 
     /**

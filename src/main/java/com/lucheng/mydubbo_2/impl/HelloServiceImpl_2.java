@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
  * HelloService 实现类
  */
 @Service
-public class HelloServiceImpl implements HelloService {
+public class HelloServiceImpl_2 implements HelloService {
     @Override
     public String getName(String name) {
         if("lucheng".equalsIgnoreCase(name)){
