@@ -29,7 +29,7 @@ public class RpcProxy {
             }
         }
         RpcClient client = new RpcClient();
-        return client.send(getRequestMessage(interfaceName,methodName,argsTypes,args));
+        return client.send(getRequestMessage(interfaceName,methodName,argsTypes,args)).getResult();
     };
     private static RequestMessage getRequestMessage(String interfaceName,
                                                     String methodName,

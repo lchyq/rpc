@@ -37,7 +37,7 @@ public class RpcClient extends ChannelInboundHandlerAdapter {
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ch.pipeline().addLast(new RpcDecoder(ResponseMessage.class))
                             .addLast(new RpcEncoder())
-                            .addLast(new RpcClient());
+                            .addLast(RpcClient.this);
                         }
                     });
             ChannelFuture future = bootstrap.connect("localhost",8899).sync();
