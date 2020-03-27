@@ -18,7 +18,10 @@ public class ClientChannelHandler extends ChannelInboundHandlerAdapter {
      */
     private ClientTransport clientTransport;
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {}
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        ResponseMessage responseMessage = (ResponseMessage) msg;
+        clientTransport.receiveResponse(responseMessage);
+    }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {

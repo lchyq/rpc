@@ -5,6 +5,9 @@ import com.lucheng.mydubbo_3.bean.RequestMessage;
 import com.lucheng.mydubbo_3.bean.ResponseMessage;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+
 /**
  * 客户端主要代码
  * 主要实现了 客户端 连接初始化
@@ -23,13 +26,15 @@ public class Client {
     private volatile boolean init = false;
     //模拟 provider 服务提供者的地址
     private static final String PROVIDER_KEY = "localhost:8899";
+    //客户端调用超时时间
+    private Integer timeOut = 3000;
 
     //同步发送
-    public ResponseMessage send(Object msg){
+    public ResponseMessage send(Object msg) throws InterruptedException, ExecutionException, TimeoutException {
         RequestMessage requestMessage = (RequestMessage) msg;
         //初始化客户端与服务端之间的连接
         initConnect();
-        return clientTransport.sensMsg(requestMessage);
+        return clientTransport.sendMsg(requestMessage,timeOut);
     }
 
     //异步发送
