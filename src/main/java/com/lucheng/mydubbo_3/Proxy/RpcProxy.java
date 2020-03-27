@@ -2,7 +2,7 @@ package com.lucheng.mydubbo_3.Proxy;
 
 import com.lucheng.mydubbo_3.bean.Invoker;
 import com.lucheng.mydubbo_3.bean.RequestMessage;
-import com.lucheng.mydubbo_3.client.RpcClient;
+import com.lucheng.mydubbo_3.client.Client;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationHandler;
@@ -16,6 +16,8 @@ import java.util.UUID;
  */
 @Slf4j
 public class RpcProxy {
+    //避免外界初始化
+    private RpcProxy(){}
     private static InvocationHandler invocationHandler = (proxy, method, args) -> {
         log.error("生成代理...");
         Class[] interfaces = proxy.getClass().getInterfaces();
@@ -28,7 +30,7 @@ public class RpcProxy {
                 argsTypes[i] = args[i].getClass();
             }
         }
-        RpcClient client = new RpcClient();
+        Client client = new Client();
         return client.send(getRequestMessage(interfaceName,methodName,argsTypes,args)).getResult();
     };
     private static RequestMessage getRequestMessage(String interfaceName,

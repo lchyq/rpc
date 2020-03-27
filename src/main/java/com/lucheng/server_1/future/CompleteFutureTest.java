@@ -2,8 +2,7 @@ package com.lucheng.server_1.future;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.*;
 
 @Slf4j
 public class CompleteFutureTest {
