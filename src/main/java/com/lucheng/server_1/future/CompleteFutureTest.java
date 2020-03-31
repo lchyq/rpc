@@ -7,8 +7,9 @@ import java.util.concurrent.*;
 @Slf4j
 public class CompleteFutureTest {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        runAsync();
-        supplyAsync();
+//        runAsync();
+//        supplyAsync();
+        whenComplte();
     }
 
     /**
@@ -71,6 +72,28 @@ public class CompleteFutureTest {
         });
         long start = System.currentTimeMillis();
         log.error("执行耗时："+ (((long)f2.get()) - start ));
+    }
+
+    private static void whenComplte(){
+        CompletableFuture<String> result = new CompletableFuture<>();
+        CompletableFuture completableFuture = CompletableFuture.runAsync(() ->{
+            log.error("开始异步调用执行");
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                log.error("超时异常");
+            }
+        });
+        completableFuture.whenComplete((Void,Throwable) ->{
+            result.complete("执行完成");
+        });
+        try{
+//            log.error("异步结果："+result.get());
+//            Thread.sleep(10000);
+        }catch (Exception e){
+            log.error("超时异常");
+        }
+        log.error("主线程执行完成");
     }
 }
 
