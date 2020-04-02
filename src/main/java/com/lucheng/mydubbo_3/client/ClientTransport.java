@@ -7,10 +7,9 @@ import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 /**
  * 客户端传输层
@@ -51,8 +50,38 @@ public class ClientTransport {
      * @param msg
      * @return
      */
-    public ResponseMessage sendAysc(Object msg){
-        return new ResponseMessage();
+    public CompletableFuture<Object> sendAysc(Object msg){
+        CompletableFuture<Object> result = new CompletableFuture<>();
+        CompletableFuture<ResponseMessage> future = CompletableFuture.supplyAsync(new Supplier<ResponseMessage>() {
+            @Override
+            public ResponseMessage get() {
+                RequestMessage requestMessage = (RequestMessage) msg;
+                MsgFuture<ResponseMessage> msgFuture = new MsgFuture<>();
+                MSG_FUTURE_MAP.put(requestMessage.getRequestId(),msgFuture);
+                channel.writeAndFlush(requestMessage);
+                msgFuture.setSendTime(System.currentTimeMillis());
+                try {
+                    log.error("开始处理调用");
+                    return msgFuture.get(2000, TimeUnit.MILLISECONDS);
+                } catch(Exception e){
+                    log.error("rpc异步调用失败 e:{}",e);
+                }
+                return new ResponseMessage();
+            }
+        });
+        future.whenComplete(new BiConsumer<ResponseMessage, Throwable>() {
+            @Override
+            public void accept(ResponseMessage responseMessage, Throwable throwable) {
+                log.error("response：{}",responseMessage);
+                CompletableFuture<String> completableFuture = (CompletableFuture<String>) responseMessage.getResult();
+                try {
+                    result.complete(completableFuture.get());
+                } catch (Exception e) {
+                    log.error("异步调用失败-- 78 e:{}",e);
+                }
+            }
+        });
+        return result;
     }
 
     public Channel getChannel() {

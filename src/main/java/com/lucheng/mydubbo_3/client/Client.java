@@ -3,8 +3,10 @@ package com.lucheng.mydubbo_3.client;
 import com.lucheng.mydubbo_3.Util.ClientTransportFactory;
 import com.lucheng.mydubbo_3.bean.RequestMessage;
 import com.lucheng.mydubbo_3.bean.ResponseMessage;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -28,9 +30,22 @@ public class Client {
     private static final String PROVIDER_KEY = "localhost:8899";
     //客户端调用超时时间
     private Integer timeOut = 3000;
+    //是否异步调用
+    private boolean Aysnc = true;
 
+    public Object sendMag(Object msg){
+        if(Aysnc){
+            return sendAysc(msg);
+        }
+        try {
+            return send(msg);
+        }catch (Exception e){
+            log.error("rpc同步调用失败 e:{}",e);
+            return new RequestMessage();
+        }
+    }
     //同步发送
-    public ResponseMessage send(Object msg) throws InterruptedException, ExecutionException, TimeoutException {
+    private ResponseMessage send(Object msg) throws InterruptedException, ExecutionException, TimeoutException {
         RequestMessage requestMessage = (RequestMessage) msg;
         //初始化客户端与服务端之间的连接
         initConnect();
@@ -38,7 +53,7 @@ public class Client {
     }
 
     //异步发送
-    public ResponseMessage sendAysc(Object msg){
+    private CompletableFuture<Object> sendAysc(Object msg){
         RequestMessage requestMessage = (RequestMessage) msg;
         //初始化客户端与服务端之间的连接
         initConnect();
@@ -60,5 +75,9 @@ public class Client {
         } catch (Exception e) {
             log.error("客户端连接服务端失败！");
         }
+    }
+
+    public boolean isAysnc() {
+        return Aysnc;
     }
 }

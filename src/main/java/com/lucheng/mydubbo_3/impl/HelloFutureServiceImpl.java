@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 public class HelloFutureServiceImpl implements HelloFutureService {
     @Override
-    public CompletableFuture<String> sayName(String name,int timeout) {
+    public CompletableFuture<String> sayName(String name,Integer timeout) {
         try {
             Thread.sleep(timeout);
         } catch (Exception e) {

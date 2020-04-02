@@ -8,5 +8,5 @@ import java.util.concurrent.CompletableFuture;
  * @date 2020-03-30
  */
 public interface HelloFutureService {
-    CompletableFuture<String> sayName(String name,int timeout);
+    CompletableFuture<String> sayName(String name,Integer timeout);
 }

@@ -19,7 +19,7 @@ public class RpcTest2 {
                 @Override
                 public void run() {
                     HelloFutureService helloService = (HelloFutureService) RpcProxy.getInstance(HelloFutureService.class);
-                    CompletableFuture<String> future = helloService.sayName("lucheng",5000);
+                    CompletableFuture<String> future = helloService.sayName("lucheng",1000);
                     try {
                         log.error("rpc调用结果为："+future.get());
                     }catch (Exception e){

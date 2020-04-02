@@ -2,6 +2,7 @@ package com.lucheng.mydubbo_3.Proxy;
 
 import com.lucheng.mydubbo_3.bean.Invoker;
 import com.lucheng.mydubbo_3.bean.RequestMessage;
+import com.lucheng.mydubbo_3.bean.ResponseMessage;
 import com.lucheng.mydubbo_3.client.Client;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,7 +32,11 @@ public class RpcProxy {
             }
         }
         Client client = new Client();
-        return client.send(getRequestMessage(interfaceName,methodName,argsTypes,args)).getResult();
+        if(client.isAysnc()){
+            return client.sendMag(getRequestMessage(interfaceName,methodName,argsTypes,args));
+        }
+        ResponseMessage responseMessage = (ResponseMessage) client.sendMag(getRequestMessage(interfaceName,methodName,argsTypes,args));
+        return responseMessage.getResult();
     };
     private static RequestMessage getRequestMessage(String interfaceName,
                                                     String methodName,
