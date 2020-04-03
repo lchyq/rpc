@@ -1,5 +1,6 @@
 package com.lucheng.mydubbo_3.future;
 
+import com.lucheng.mydubbo_3.exception.RpcException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.*;
@@ -43,7 +44,7 @@ public class MsgFuture<T> implements Future<T> {
             return result;
         }
         if(isCancel){
-            throw new RuntimeException("future 已失效，获取结果失败");
+            throw new RpcException("future 已失效，获取结果失败");
         }
         if(result != null){
             return result;
@@ -61,7 +62,7 @@ public class MsgFuture<T> implements Future<T> {
                 if(result != null){
                     return result;
                 }
-                throw new RuntimeException("获取服务端响应结果超时");
+                throw new RpcException("获取服务端响应结果超时");
             }
         }
     }

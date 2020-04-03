@@ -3,6 +3,7 @@ package com.lucheng.mydubbo_3.Util;
 import com.lucheng.mydubbo_3.bean.ResponseMessage;
 import com.lucheng.mydubbo_3.client.ClientChannelHandler;
 import com.lucheng.mydubbo_3.client.ClientTransport;
+import com.lucheng.mydubbo_3.exception.RpcException;
 import com.lucheng.mydubbo_3.serialization.RpcDecoder;
 import com.lucheng.mydubbo_3.serialization.RpcEncoder;
 import io.netty.bootstrap.Bootstrap;
@@ -51,10 +52,10 @@ public class ClientTransportFactory {
      * @return ClientTransPort
      * @throws Exception ex
      */
-    public static ClientTransport getClientTransPort(String clientTransPortKey) throws Exception{
+    public static ClientTransport getClientTransPort(String clientTransPortKey,boolean async) throws Exception{
         if(StringUtils.isEmpty(clientTransPortKey) ||
             StringUtils.isBlank(clientTransPortKey)){
-            throw new RuntimeException("获取客户端连接失败，客户端鉴权key为null");
+            throw new RpcException("获取客户端连接失败，客户端鉴权key为null");
         }
         ClientTransport clientTransport = clientTransportMap.get(clientTransPortKey);
         if(clientTransport == null){
@@ -67,6 +68,7 @@ public class ClientTransportFactory {
                     Channel channel = buildChannel(clientTransPortKey);
                     clientTransport = new ClientTransport();
                     clientTransport.setChannel(channel);
+                    clientTransport.setAsync(async);
                     clientTransportMap.put(clientTransPortKey,clientTransport);
                     buildHandler(channel,clientTransport);
                 }
@@ -101,7 +103,7 @@ public class ClientTransportFactory {
         if(++reConTime > 3){
             clientReConTimes.remove(clientTransPortKey);
             log.error("客户端连接失败！");
-            throw new RuntimeException("客户端连接失败！");
+            throw new RpcException("客户端连接失败！");
         }
         if(reConTime > 1){
             log.error("客户端 获取服务端连接失败 开始重试新连接");

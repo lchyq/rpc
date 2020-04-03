@@ -3,6 +3,7 @@ package com.lucheng.mydubbo_3.client;
 import com.lucheng.mydubbo_3.Util.ClientTransportFactory;
 import com.lucheng.mydubbo_3.bean.RequestMessage;
 import com.lucheng.mydubbo_3.bean.ResponseMessage;
+import com.lucheng.mydubbo_3.exception.RpcException;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,7 +36,7 @@ public class Client {
 
     public Object sendMag(Object msg){
         if(Aysnc){
-            return sendAysc(msg);
+            return sendAsync(msg);
         }
         try {
             return send(msg);
@@ -53,31 +54,31 @@ public class Client {
     }
 
     //异步发送
-    private CompletableFuture<Object> sendAysc(Object msg){
+    private CompletableFuture<Object> sendAsync(Object msg){
         RequestMessage requestMessage = (RequestMessage) msg;
         //初始化客户端与服务端之间的连接
         initConnect();
-        return clientTransport.sendAysc(requestMessage);
+        return clientTransport.sendAsync(requestMessage);
     }
 
     //客户端初始化连接
     private void initConnect(){
         if(destory){
-            throw new RuntimeException("客户端已被销毁");
+            throw new RpcException("客户端已被销毁");
         }
         if(init){
             //说明客户端已初始化 无需重复初始化
             return;
         }
         try {
-            clientTransport = ClientTransportFactory.getClientTransPort(PROVIDER_KEY);
+            clientTransport = ClientTransportFactory.getClientTransPort(PROVIDER_KEY,Aysnc);
             init = true;
         } catch (Exception e) {
             log.error("客户端连接服务端失败！");
         }
     }
 
-    public boolean isAysnc() {
+    public boolean isAsync() {
         return Aysnc;
     }
 }

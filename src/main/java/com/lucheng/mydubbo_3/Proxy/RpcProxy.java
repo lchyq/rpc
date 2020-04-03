@@ -32,7 +32,7 @@ public class RpcProxy {
             }
         }
         Client client = new Client();
-        if(client.isAysnc()){
+        if(client.isAsync()){
             return client.sendMag(getRequestMessage(interfaceName,methodName,argsTypes,args));
         }
         ResponseMessage responseMessage = (ResponseMessage) client.sendMag(getRequestMessage(interfaceName,methodName,argsTypes,args));

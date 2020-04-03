@@ -1,5 +1,6 @@
 package com.lucheng.mydubbo_2.registercenter;
 
+import com.lucheng.mydubbo_3.exception.RpcException;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -26,13 +27,13 @@ public class RegisterMap2 implements ApplicationContextAware {
      */
     public static void register(String interfaceName,String ref){
         if(interfaceName == null || interfaceName.length() <= 0){
-            throw new RuntimeException("请输入接口名称！！！");
+            throw new RpcException("请输入接口名称！！！");
         }
         try {
             Class clazz = Class.forName(ref);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            throw new RuntimeException("接口发布到注册中心失败！！");
+            throw new RpcException("接口发布到注册中心失败！！");
         }
         //注册到注册中心
         registerService.put(interfaceName,ref);
