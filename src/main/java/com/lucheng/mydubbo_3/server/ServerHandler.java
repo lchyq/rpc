@@ -1,6 +1,6 @@
 package com.lucheng.mydubbo_3.server;
 
-import com.lucheng.mydubbo_1.registercenter.RegisterMap;
+import com.lucheng.learn.mydubbo_1.registercenter.RegisterMap;
 import com.lucheng.mydubbo_3.bean.Invoker;
 import com.lucheng.mydubbo_3.bean.RequestMessage;
 import com.lucheng.mydubbo_3.bean.ResponseMessage;
