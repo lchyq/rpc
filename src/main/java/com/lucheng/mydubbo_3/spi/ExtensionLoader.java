@@ -217,6 +217,7 @@ public class ExtensionLoader<T> {
             String key = line.substring(0,line.indexOf("="));
             String value = line.substring(line.indexOf("=") + 1);
             map.put(key,loadClass(value));
+            line = bufferedReader.readLine();
         }
     }
 
@@ -249,7 +250,6 @@ public class ExtensionLoader<T> {
             clazz.getConstructor(type);
             return true;
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
             return false;
         }
     }
